@@ -77,4 +77,6 @@ def get_emails_by_role(users, role):
     return emails
 
 result = get_emails_by_role(lst, "tester")
-print(result)
+assert len(result) > 0
+print("Test passed")
+
