@@ -81,4 +81,4 @@
 # print("Test passed")
 
 def get_emails_by_role(users, role):
-    return [user["email"] for user in users if user["role"] == role
+    return [user["email"] for user in users if user["role"] == role]
