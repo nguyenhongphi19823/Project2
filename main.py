@@ -80,5 +80,39 @@
 # assert len(result) > 0
 # print("Test passed")
 
-def get_emails_by_role(users, role):
-    return [user["email"] for user in users if user["role"] == role]
+# def get_emails_by_role(users, role):
+#     return [user["email"] for user in users if user["role"] == role]
+
+# lst = [
+#     {"email": "a@test.com", "role": "admin"},
+#     {"email": "b@test.com", "role": "tester"}
+# ]
+#
+# def has_role(users, role):
+#     for user in users:
+#         if user["role"] == role:
+#             return True
+#
+#     return False
+#
+# assert has_role(lst, "admin") is True
+# assert has_role(lst, "manager") is False
+
+
+lst = [
+    {"email": "a@test.com", "role": "admin"},
+    {"email": "b@test.com", "role": "tester"}
+]
+
+class UserManager:
+    def __init__(self, users):
+        self.users = users
+    def has_role(self, role):
+        for user in self.users:
+            if user["role"] == role:
+                return True
+        return False
+
+manager = UserManager(lst)
+print(manager.has_role("admin"))
+print(manager.has_role("manager"))
