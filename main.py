@@ -64,19 +64,20 @@
 # check_role(lst, "tester")
 
 
-lst = [
-    {"email": "a@test.com", "role": "admin"},
-    {"email": "b@test.com", "role": "tester"}
-]
-
+# lst = [
+#     {"email": "a@test.com", "role": "admin"},
+#     {"email": "b@test.com", "role": "tester"}
+# ]
+#
 # def get_emails_by_role(users, role):
-#     emails = []
-#     for user in users:
-#         if user["role"] == role:
-#             emails.append(user["email"])
-#     return emails
+#     return [user["email"] for user in users if user["role"] == role]
 #
 # result = get_emails_by_role(lst, "tester")
 # assert len(result) > 0
 # print("Test passed")
 
+def get_emails_by_role(users, role):
+    emails = []
+    for user in users:
+        if user["role"] == role:
+            emails.append(user["email"])
