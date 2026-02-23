@@ -112,7 +112,27 @@ class UserManager:
             if user["role"] == role:
                 return True
         return False
+    def get_emails_by_role(self, role):
+        emails = []
+        for user in self.users:
+            if user["role"] == role:
+                emails.append(user["email"])
+        return emails
+
+    def count_users(self):
+        return len(self.users)
+
+    def add_user(self, email, role):
+        new_user = {"email": email, "role": role}
+        self.users.append(new_user)
+
 
 manager = UserManager(lst)
-print(manager.has_role("admin"))
+manager.add_user("c@test.com", "manager")
+print(manager.has_role("tester"))
 print(manager.has_role("manager"))
+print(manager.count_users())
+print(manager.has_role("manager"))
+
+
+
