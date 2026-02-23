@@ -126,13 +126,31 @@ class UserManager:
         new_user = {"email": email, "role": role}
         self.users.append(new_user)
 
+    # def remove_user_by_email(self, email):
+    #     for user in self.users:
+    #         if user["email"] == email:
+    #             self.users.remove(user)
+    #             break
+
+
+    def remove_user_by_email(self, email):
+       self.users = [
+          user for user in self.users
+             if user["email"] != email
+    ]
+
+
+
+# manager = UserManager(lst)
+# manager.add_user("c@test.com", "manager")
+# print(manager.has_role("tester"))
+# print(manager.has_role("manager"))
+# print(manager.count_users())
+# print(manager.has_role("manager"))
+
 
 manager = UserManager(lst)
-manager.add_user("c@test.com", "manager")
-print(manager.has_role("tester"))
-print(manager.has_role("manager"))
-print(manager.count_users())
-print(manager.has_role("manager"))
-
-
-
+print(manager.count_users())  # 2
+manager.remove_user_by_email("a@test.com")
+print(manager.count_users())  # 1
+print(manager.has_role("admin"))  # False
