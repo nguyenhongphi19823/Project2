@@ -193,15 +193,13 @@
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-logger.info("User created")
-logger.error("Login failed")
 
-lst = [
-    {"email": "a@test.com", "role": "admin"},
-    {"email": "b@test.com", "role": "tester"}
-]
+
+
 class UserNotFoundError(Exception):
-    pass
+    def __init__(self, email):
+        super().__init__(f"User with email {email} not found")
+        self.email = email
 
 class UserManager:
     def __init__(self, users):
@@ -209,7 +207,9 @@ class UserManager:
     def get_user_by_email(self, email):
         for user in self.users:
             if user["email"] == email:
+                logger.info(f"User {email} found")
                 return user
+
         logger.error(f"User {email} not found")
         raise UserNotFoundError(email)
 
