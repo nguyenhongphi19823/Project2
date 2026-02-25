@@ -184,6 +184,17 @@
 #
 # print(get_required_email({"role": "admin"}))
 
+import logging
+
+# logging.basicConfig(level=logging.INFO)
+# logging.info("Test Started")
+# logging.warning("This is a warning")
+# logging.error("Something went wrong")
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+logger.info("User created")
+logger.error("Login failed")
 
 lst = [
     {"email": "a@test.com", "role": "admin"},
@@ -200,6 +211,7 @@ class UserManager:
             if user["email"] == email:
                 return user
         raise UserNotFoundError("User not Found")
+        logger.error(f"User {email} not found")
     def add_user(self, email, role):
         logger.info(f"Adding user {email}")
         self.users.append({"email": email, "role": role})
@@ -213,14 +225,3 @@ print(manager.get_user_by_email("a@test.com"))
 print(manager.get_user_by_email("x@test.com"))
 
 
-import logging
-
-# logging.basicConfig(level=logging.INFO)
-# logging.info("Test Started")
-# logging.warning("This is a warning")
-# logging.error("Something went wrong")
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
-logger.info("User created")
-logger.error("Login failed")
