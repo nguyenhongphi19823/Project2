@@ -210,8 +210,9 @@ class UserManager:
         for user in self.users:
             if user["email"] == email:
                 return user
-        raise UserNotFoundError("User not Found")
         logger.error(f"User {email} not found")
+        raise UserNotFoundError("User not Found")
+
     def add_user(self, email, role):
         logger.info(f"Adding user {email}")
         self.users.append({"email": email, "role": role})
