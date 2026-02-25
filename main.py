@@ -191,8 +191,8 @@
 # logging.warning("This is a warning")
 # logging.error("Something went wrong")
 import logging
-logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 logger.info("User created")
 logger.error("Login failed")
 
@@ -211,7 +211,7 @@ class UserManager:
             if user["email"] == email:
                 return user
         logger.error(f"User {email} not found")
-        raise UserNotFoundError("User not Found")
+        raise UserNotFoundError(email)
 
     def add_user(self, email, role):
         logger.info(f"Adding user {email}")
