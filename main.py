@@ -253,13 +253,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-with open("users.json", "r") as file:
-    data = json.load(file)
-
-
-
-
-
+try:
+    with open("users.json", "r") as file:
+        data = json.load(file)
+except FileNotFoundError:
+    logger.error("users.json not found")
 
 
 # ✅ Custom Exception
