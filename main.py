@@ -283,11 +283,6 @@ class UserManager:
         logger.info(f"Adding user {email}")
         self.users.append({"email": email, "role": role})
 
-# ✅ Test data
-lst = [
-    {"email": "a@test.com", "role": "admin"},
-    {"email": "b@test.com", "role": "tester"}
-]
 
 # ✅ Run thử
 manager = UserManager(data)
