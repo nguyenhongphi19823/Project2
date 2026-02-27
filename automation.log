@@ -10,3 +10,9 @@
 2026-02-28 05:57:40,160 - INFO - User a@test.com found
 2026-02-28 05:57:40,160 - ERROR - User x@test.com not found
 2026-02-28 05:57:40,161 - CRITICAL - Exception caught: User with email x@test.com not found
+2026-02-28 06:16:58,662 - INFO - User a@test.com found
+2026-02-28 06:16:58,662 - ERROR - User x@test.com not found
+2026-02-28 06:16:58,662 - CRITICAL - Exception caught: User with email x@test.com not found
+2026-02-28 06:21:02,468 - INFO - User a@test.com found
+2026-02-28 06:21:02,469 - ERROR - User x@test.com not found
+2026-02-28 06:21:02,469 - CRITICAL - Exception caught: User with email x@test.com not found

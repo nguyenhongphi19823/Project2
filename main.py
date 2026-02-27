@@ -258,7 +258,7 @@ try:
         data = json.load(file)
 except FileNotFoundError:
     logger.error("users.json not found")
-
+    raise
 
 # ✅ Custom Exception
 class UserNotFoundError(Exception):
