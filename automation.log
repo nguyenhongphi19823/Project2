@@ -1,0 +1,3 @@
+2026-02-27 10:58:03,882 - INFO - User a@test.com found
+2026-02-27 10:58:03,882 - ERROR - User x@test.com not found
+2026-02-27 10:58:03,882 - CRITICAL - Exception caught: User with email x@test.com not found
