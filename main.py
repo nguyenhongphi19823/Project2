@@ -193,7 +193,6 @@
 
 import logging
 
-
 # ✅ Logging config (ghi ra file + console)
 logging.basicConfig(
     level=logging.INFO,
@@ -204,17 +203,14 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-
 # ✅ Custom Exception
 class UserNotFoundError(Exception):
     def __init__(self, email):
         super().__init__(f"User with email {email} not found")
         self.email = email
 
-
 # ✅ UserManager class
 class UserManager:
-
     def __init__(self, users):
         self.users = users
 
@@ -231,19 +227,15 @@ class UserManager:
         logger.info(f"Adding user {email}")
         self.users.append({"email": email, "role": role})
 
-
 # ✅ Test data
 lst = [
     {"email": "a@test.com", "role": "admin"},
     {"email": "b@test.com", "role": "tester"}
 ]
 
-
 # ✅ Run thử
 manager = UserManager(lst)
-
 print(manager.get_user_by_email("a@test.com"))
-
 try:
     print(manager.get_user_by_email("x@test.com"))
 except UserNotFoundError as e:
