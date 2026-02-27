@@ -242,6 +242,62 @@
 #     logger.critical(f"Exception caught: {e}")
 
 import json
+import logging
+
 with open("users.json", "r") as file:
     data = json.load(file)
-print(data)
+
+logging.basicConfig(level=logging.INFO)
+logging.info("Test Started")
+logging.warning("This is a warning")
+logging.error("Something went wrong")
+
+
+
+# ✅ Logging config (ghi ra file + console)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    filename="automation.log",
+    filemode="a"
+)
+
+logger = logging.getLogger(__name__)
+
+# ✅ Custom Exception
+class UserNotFoundError(Exception):
+    def __init__(self, email):
+        super().__init__(f"User with email {email} not found")
+        self.email = email
+
+# ✅ UserManager class
+class UserManager:
+    def __init__(self, users):
+        self.users = users
+
+    def get_user_by_email(self, email):
+        for user in self.users:
+            if user["email"] == email:
+                logger.info(f"User {email} found")
+                return user
+
+        logger.error(f"User {email} not found")
+        raise UserNotFoundError(email)
+
+    def add_user(self, email, role):
+        logger.info(f"Adding user {email}")
+        self.users.append({"email": email, "role": role})
+
+# ✅ Test data
+lst = [
+    {"email": "a@test.com", "role": "admin"},
+    {"email": "b@test.com", "role": "tester"}
+]
+
+# ✅ Run thử
+manager = UserManager(data)
+print(manager.get_user_by_email("a@test.com"))
+try:
+    print(manager.get_user_by_email("x@test.com"))
+except UserNotFoundError as e:
+    logger.critical(f"Exception caught: {e}")
