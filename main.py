@@ -247,11 +247,6 @@ import logging
 with open("users.json", "r") as file:
     data = json.load(file)
 
-logging.basicConfig(level=logging.INFO)
-logging.info("Test Started")
-logging.warning("This is a warning")
-logging.error("Something went wrong")
-
 
 
 # ✅ Logging config (ghi ra file + console)
