@@ -244,11 +244,6 @@
 import json
 import logging
 
-with open("users.json", "r") as file:
-    data = json.load(file)
-
-
-
 # ✅ Logging config (ghi ra file + console)
 logging.basicConfig(
     level=logging.INFO,
@@ -256,8 +251,16 @@ logging.basicConfig(
     filename="automation.log",
     filemode="a"
 )
-
 logger = logging.getLogger(__name__)
+
+with open("users.json", "r") as file:
+    data = json.load(file)
+
+
+
+
+
+
 
 # ✅ Custom Exception
 class UserNotFoundError(Exception):
