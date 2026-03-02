@@ -1,4 +1,10 @@
 [
-    {"email": "a@test.com", "role": "admin"},
-    {"email": "b@test.com", "role": "tester"}
+    {
+        "email": "b@test.com",
+        "role": "tester"
+    },
+    {
+        "email": "c@test.com",
+        "role": "manager"
+    }
 ]

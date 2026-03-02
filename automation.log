@@ -16,3 +16,8 @@
 2026-02-28 06:21:02,468 - INFO - User a@test.com found
 2026-02-28 06:21:02,469 - ERROR - User x@test.com not found
 2026-02-28 06:21:02,469 - CRITICAL - Exception caught: User with email x@test.com not found
+2026-03-02 11:08:27,184 - INFO - Adding user c@test.com
+2026-03-02 11:08:27,184 - INFO - Removing user a@test.com
+2026-03-02 11:08:27,185 - INFO - Users saved to users.json
+2026-03-02 11:08:27,185 - ERROR - User x@test.com not found
+2026-03-02 11:08:27,185 - CRITICAL - Exception caught: User with email x@test.com not found
