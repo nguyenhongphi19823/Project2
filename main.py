@@ -242,72 +242,188 @@
 #     logger.critical(f"Exception caught: {e}")
 
 
-import json
-import logging
+# import json
+# import logging
+#
+# logging.basicConfig(
+#     level=logging.INFO,
+#     format="%(asctime)s - %(levelname)s - %(message)s",
+#     filename="automation.log",
+#     filemode="a"
+# )
+# logger = logging.getLogger(__name__)
+#
+# try:
+#     with open("users.json", "r") as file:
+#         data = json.load(file)
+# except FileNotFoundError:
+#     logger.error("users.json not found")
+#     raise
+#
+#
+# class UserNotFoundError(Exception):
+#     def __init__(self, email):
+#         super().__init__(f"User with email {email} not found")
+#         self.email = email
+#
+#
+# class UserManager:
+#     def __init__(self, users):
+#         self.users = users
+#
+#     def get_user_by_email(self, email):
+#         for user in self.users:
+#             if user["email"] == email:
+#                 logger.info(f"User {email} found")
+#                 return user
+#
+#         logger.error(f"User {email} not found")
+#         raise UserNotFoundError(email)
+#
+#     def add_user(self, email, role):
+#         logger.info(f"Adding user {email}")
+#         self.users.append({"email": email, "role": role})
+#
+#     def remove_user_by_email(self, email):
+#         for user in self.users:
+#             if user["email"] == email:
+#                 logger.info(f"Removing user {email}")
+#                 self.users.remove(user)
+#                 return
+#
+#         logger.error(f"User {email} not found for removal")
+#         raise UserNotFoundError(email)
+#
+#     def save_to_file(self, filename):
+#         with open(filename, "w") as file:
+#             json.dump(self.users, file, indent=4)
+#         logger.info(f"Users saved to {filename}")
+#
+#
+# # Run thử
+# manager = UserManager(data)
+#
+# manager.add_user("c@test.com", "manager")
+# manager.remove_user_by_email("a@test.com")
+# manager.save_to_file("users.json")
+#
+# try:
+#     manager.get_user_by_email("x@test.com")
+# except UserNotFoundError as e:
+#     logger.critical(f"Exception caught: {e}")
 
+
+
+import json  # Làm việc với JSON: đọc (load) và ghi (dump) dữ liệu test/config
+import logging  # Logging chuyên nghiệp thay cho print (có level, timestamp, ghi file)
+
+# =========================
+# LOGGING CONFIG
+# =========================
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    filename="automation.log",
-    filemode="a"
+    level=logging.INFO,  # Chỉ ghi log từ INFO trở lên (INFO/WARNING/ERROR/CRITICAL). DEBUG sẽ bị bỏ qua
+    format="%(asctime)s - %(levelname)s - %(message)s",  # Format: thời gian - level - message
+    filename="automation.log",  # Ghi log vào file automation.log (không chỉ in ra console)
+    filemode="a"  # Append: chạy lần sau sẽ ghi nối tiếp, không ghi đè file cũ
 )
+
+# Tạo logger riêng cho module/file hiện tại (best practice khi project có nhiều file)
 logger = logging.getLogger(__name__)
 
+# =========================
+# LOAD TEST DATA FROM JSON
+# =========================
 try:
+    # Mở file users.json ở chế độ đọc ("r"); with giúp tự đóng file sau khi đọc xong
     with open("users.json", "r") as file:
+        # json.load(file) chuyển JSON -> Python object
+        # Nếu JSON bắt đầu bằng [ ... ] thì data sẽ là list; mỗi phần tử là dict user
         data = json.load(file)
 except FileNotFoundError:
+    # Nếu không có file users.json: log lỗi và dừng chương trình ngay
+    # (Không có test data thì không nên chạy tiếp)
     logger.error("users.json not found")
-    raise
+    raise  # Ném lại lỗi gốc để fail fast
 
-
+# =========================
+# CUSTOM EXCEPTION
+# =========================
 class UserNotFoundError(Exception):
+    # Custom exception dành riêng cho lỗi "không tìm thấy user"
     def __init__(self, email):
+        # Gọi constructor của Exception để set message hiển thị khi raise
         super().__init__(f"User with email {email} not found")
+        # Lưu email vào object exception để debug/log/report sau này
         self.email = email
 
-
+# =========================
+# BUSINESS LOGIC CLASS
+# =========================
 class UserManager:
     def __init__(self, users):
+        # Lưu danh sách users vào state của object (self.users)
         self.users = users
 
     def get_user_by_email(self, email):
+        # Duyệt toàn bộ danh sách user để tìm theo email
         for user in self.users:
+            # user là dict, ví dụ {"email": "...", "role": "..."}
             if user["email"] == email:
+                # Tìm thấy -> log INFO và return dict user (kết thúc hàm ngay)
                 logger.info(f"User {email} found")
                 return user
 
+        # Duyệt hết không thấy -> log ERROR và raise custom exception để fail đúng nghiệp vụ
         logger.error(f"User {email} not found")
         raise UserNotFoundError(email)
 
     def add_user(self, email, role):
+        # Log hành động trước khi thay đổi dữ liệu (giúp trace khi debug)
         logger.info(f"Adding user {email}")
+        # Thêm user mới vào list; đây là thay đổi state của object
         self.users.append({"email": email, "role": role})
 
     def remove_user_by_email(self, email):
+        # Duyệt danh sách để tìm user cần xóa
         for user in self.users:
             if user["email"] == email:
+                # Tìm thấy -> log INFO và xóa user khỏi list
                 logger.info(f"Removing user {email}")
                 self.users.remove(user)
-                return
+                return  # Xóa xong thì dừng hàm (không cần loop tiếp)
 
+        # Không tìm thấy user để xóa -> log ERROR và raise để báo lỗi đúng nghiệp vụ
         logger.error(f"User {email} not found for removal")
         raise UserNotFoundError(email)
 
     def save_to_file(self, filename):
+        # Ghi danh sách users hiện tại ra file JSON (ghi đè nội dung cũ)
         with open(filename, "w") as file:
+            # json.dump: Python object -> JSON và ghi vào file
+            # indent=4 giúp file JSON dễ đọc (pretty print)
             json.dump(self.users, file, indent=4)
+        # Log sau khi lưu thành công
         logger.info(f"Users saved to {filename}")
 
+# =========================
+# DEMO RUN (MINI PROJECT)
+# =========================
 
-# Run thử
+# Tạo object UserManager với data load từ users.json
 manager = UserManager(data)
 
+# Thử thêm user mới (sẽ log INFO)
 manager.add_user("c@test.com", "manager")
+
+# Thử xóa user có email a@test.com (nếu có sẽ log INFO; nếu không có sẽ raise)
 manager.remove_user_by_email("a@test.com")
+
+# Lưu danh sách users sau khi add/remove về lại users.json (sẽ log INFO)
 manager.save_to_file("users.json")
 
+# Thử case lỗi: tìm user không tồn tại để thấy flow ERROR -> raise -> except
 try:
-    manager.get_user_by_email("x@test.com")
+    manager.get_user_by_email("x@test.com")  # Không có -> log ERROR rồi raise UserNotFoundError
 except UserNotFoundError as e:
+    # Bắt đúng loại lỗi và log CRITICAL (mức nghiêm trọng/cần chú ý)
     logger.critical(f"Exception caught: {e}")
