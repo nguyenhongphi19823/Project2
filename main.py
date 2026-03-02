@@ -413,10 +413,10 @@ class UserManager:
 manager = UserManager(data)
 
 # Thử thêm user mới (sẽ log INFO)
-manager.add_user("c@test.com", "manager")
+manager.add_user("c2@test.com", "manager2")
 
 # Thử xóa user có email a@test.com (nếu có sẽ log INFO; nếu không có sẽ raise)
-manager.remove_user_by_email("a@test.com")
+manager.remove_user_by_email("b@test.com")
 
 # Lưu danh sách users sau khi add/remove về lại users.json (sẽ log INFO)
 manager.save_to_file("users.json")
