@@ -241,10 +241,10 @@
 # except UserNotFoundError as e:
 #     logger.critical(f"Exception caught: {e}")
 
+
 import json
 import logging
 
-# ✅ Logging config (ghi ra file + console)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -260,13 +260,13 @@ except FileNotFoundError:
     logger.error("users.json not found")
     raise
 
-# ✅ Custom Exception
+
 class UserNotFoundError(Exception):
     def __init__(self, email):
         super().__init__(f"User with email {email} not found")
         self.email = email
 
-# ✅ UserManager class
+
 class UserManager:
     def __init__(self, users):
         self.users = users
@@ -284,11 +284,30 @@ class UserManager:
         logger.info(f"Adding user {email}")
         self.users.append({"email": email, "role": role})
 
+    def remove_user_by_email(self, email):
+        for user in self.users:
+            if user["email"] == email:
+                logger.info(f"Removing user {email}")
+                self.users.remove(user)
+                return
 
-# ✅ Run thử
+        logger.error(f"User {email} not found for removal")
+        raise UserNotFoundError(email)
+
+    def save_to_file(self, filename):
+        with open(filename, "w") as file:
+            json.dump(self.users, file, indent=4)
+        logger.info(f"Users saved to {filename}")
+
+
+# Run thử
 manager = UserManager(data)
-print(manager.get_user_by_email("a@test.com"))
+
+manager.add_user("c@test.com", "manager")
+manager.remove_user_by_email("a@test.com")
+manager.save_to_file("users.json")
+
 try:
-    print(manager.get_user_by_email("x@test.com"))
+    manager.get_user_by_email("x@test.com")
 except UserNotFoundError as e:
     logger.critical(f"Exception caught: {e}")
