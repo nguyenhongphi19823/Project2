@@ -23,3 +23,5 @@
 2026-03-02 11:08:27,185 - CRITICAL - Exception caught: User with email x@test.com not found
 2026-03-02 11:08:41,932 - INFO - Adding user c@test.com
 2026-03-02 11:08:41,932 - ERROR - User a@test.com not found for removal
+2026-03-02 11:08:58,319 - INFO - Adding user c@test.com
+2026-03-02 11:08:58,319 - ERROR - User a@test.com not found for removal
