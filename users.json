@@ -1,10 +1,10 @@
 [
     {
-        "email": "c@test.com",
-        "role": "manager"
-    },
-    {
         "email": "c2@test.com",
         "role": "manager2"
+    },
+    {
+        "email": "c3@test.com",
+        "role": "manager3"
     }
 ]
