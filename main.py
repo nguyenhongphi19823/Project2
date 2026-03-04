@@ -313,7 +313,6 @@
 #     logger.critical(f"Exception caught: {e}")
 
 
-
 import json  # Làm việc với JSON: đọc (load) và ghi (dump) dữ liệu test/config
 import logging  # Logging chuyên nghiệp thay cho print (có level, timestamp, ghi file)
 
@@ -413,10 +412,10 @@ class UserManager:
 manager = UserManager(data)
 
 # Thử thêm user mới (sẽ log INFO)
-manager.add_user("c3@test.com", "manager3")
+manager.add_user("c@test.com", "manager")
 
 # Thử xóa user có email a@test.com (nếu có sẽ log INFO; nếu không có sẽ raise)
-manager.remove_user_by_email("c@test.com")
+manager.remove_user_by_email("a@test.com")
 
 # Lưu danh sách users sau khi add/remove về lại users.json (sẽ log INFO)
 manager.save_to_file("users.json")

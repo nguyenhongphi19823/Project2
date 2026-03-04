@@ -1,6 +1,0 @@
-
-2026-03-02 12:50:27,228 - INFO - Adding user c3@test.com
-2026-03-02 12:50:27,228 - INFO - Removing user c@test.com
-2026-03-02 12:50:27,229 - INFO - Users saved to users.json
-2026-03-02 12:50:27,229 - ERROR - User x@test.com not found
-2026-03-02 12:50:27,229 - CRITICAL - Exception caught: User with email x@test.com not found
