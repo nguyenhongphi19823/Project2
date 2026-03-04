@@ -334,7 +334,7 @@ logger = logging.getLogger(__name__)
 # =========================
 try:
     # Mở file users.json ở chế độ đọc ("r"); with giúp tự đóng file sau khi đọc xong
-    with open("users.json", "r") as file:
+    with open("app/users.json", "r") as file:
         # json.load(file) chuyển JSON -> Python object
         # Nếu JSON bắt đầu bằng [ ... ] thì data sẽ là list; mỗi phần tử là dict user
         data = json.load(file)
