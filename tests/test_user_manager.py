@@ -99,3 +99,4 @@ def test_get_user_by_email_not_found(manager):
         # Gọi function với email không tồn tại
         # Code trong UserManager sẽ raise UserNotFoundError
         manager.get_user_by_email("x@test.com")
+
