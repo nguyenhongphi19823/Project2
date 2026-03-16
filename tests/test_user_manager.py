@@ -76,16 +76,27 @@ def manager():
 # Test case: kiểm tra khi email tồn tại
 # pytest sẽ tự động inject fixture "manager"
 # vào parameter manager của function này
-def test_get_user_by_email_found(manager):
+# def test_get_user_by_email_found(manager):
+#
+#     # Gọi function cần test
+#     # tìm user có email "a@test.com"
+#     user = manager.get_user_by_email("a@test.com")
+#
+#     # Kiểm tra kết quả trả về có đúng email mong đợi hay không
+#     # Nếu đúng -> test PASS
+#     # Nếu sai -> pytest báo FAIL
+#     assert user["email"] == "a@test.com"
 
-    # Gọi function cần test
-    # tìm user có email "a@test.com"
-    user = manager.get_user_by_email("a@test.com")
-
-    # Kiểm tra kết quả trả về có đúng email mong đợi hay không
-    # Nếu đúng -> test PASS
-    # Nếu sai -> pytest báo FAIL
-    assert user["email"] == "a@test.com"
+@pytest.mark.parametrize(
+    "email, role",
+    [
+        ("a@test.com", "admin"),
+        ("b@test.com", "tester"),
+    ]
+)
+def test_get_user_role(manager, email, role):
+    user = manager.get_user_by_email(email)
+    assert user["role"] == role
 
 
 # Test case: kiểm tra khi email không tồn tại
