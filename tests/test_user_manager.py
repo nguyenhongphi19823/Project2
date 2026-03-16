@@ -87,27 +87,63 @@ def manager():
 #     # Nếu sai -> pytest báo FAIL
 #     assert user["email"] == "a@test.com"
 
-@pytest.mark.parametrize(
-    "email, role",
-    [
-        ("a@test.com", "admin"),
-        ("b@test.com", "tester"),
-    ]
-)
-def test_get_user_role(manager, email, role):
-    user = manager.get_user_by_email(email)
-    assert user["role"] == role
+
 
 
 # Test case: kiểm tra khi email không tồn tại
-def test_get_user_by_email_not_found(manager):
+# def test_get_user_by_email_not_found(manager):
+#
+#     # pytest.raises dùng để kiểm tra một exception có được raise hay không
+#     # Nếu function không raise exception -> test FAIL
+#     # Nếu raise đúng loại exception -> test PASS
+#     with pytest.raises(UserNotFoundError):
+#
+#         # Gọi function với email không tồn tại
+#         # Code trong UserManager sẽ raise UserNotFoundError
+#         manager.get_user_by_email("x@test.com")
 
-    # pytest.raises dùng để kiểm tra một exception có được raise hay không
-    # Nếu function không raise exception -> test FAIL
-    # Nếu raise đúng loại exception -> test PASS
+
+
+# pytest.mark.parametrize dùng để chạy cùng một test với nhiều bộ dữ liệu khác nhau
+@pytest.mark.parametrize(
+
+    # Khai báo tên các biến sẽ được truyền vào test function
+    # Ở đây test sẽ nhận 2 biến: email và role
+    "email, role",
+
+    # Danh sách các bộ dữ liệu test
+    # Mỗi tuple sẽ tạo ra 1 lần chạy test
+    [
+        ("a@test.com", "admin"),   # Lần chạy test 1
+        ("b@test.com", "tester"),  # Lần chạy test 2
+    ]
+)
+
+# Test function
+# pytest sẽ inject:
+# - fixture "manager"
+# - dữ liệu email và role từ parametrize
+def test_get_user_role(manager, email, role):
+
+    # Gọi function cần test
+    # tìm user theo email
+    user = manager.get_user_by_email(email)
+
+    # Kiểm tra role của user trả về có đúng như mong đợi không
+    # Nếu đúng -> test PASS
+    # Nếu sai -> pytest báo FAIL
+    assert user["role"] == role
+
+
+
+@pytest.mark.parametrize(
+    "email",
+    [
+        "x@test.com",
+        "y@test.com",
+        "z@test.com",
+    ]
+)
+def test_user_not_found(manager, email):
     with pytest.raises(UserNotFoundError):
-
-        # Gọi function với email không tồn tại
-        # Code trong UserManager sẽ raise UserNotFoundError
-        manager.get_user_by_email("x@test.com")
-
+        manager.get_user_by_email(email)
