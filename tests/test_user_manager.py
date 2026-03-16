@@ -137,14 +137,33 @@ def test_get_user_role(manager, email, role):
 
 
 
+# pytest.mark.parametrize dùng để chạy cùng một test với nhiều bộ dữ liệu
 @pytest.mark.parametrize(
+
+    # Khai báo tên biến sẽ được truyền vào test function
+    # Ở đây test function sẽ nhận biến "email"
     "email",
+
+    # Danh sách dữ liệu test
+    # Mỗi giá trị trong list sẽ tạo ra 1 lần chạy test
     [
-        "x@test.com",
-        "y@test.com",
-        "z@test.com",
+        "x@test.com",  # Test case 1
+        "y@test.com",  # Test case 2
+        "z@test.com",  # Test case 3
     ]
 )
+
+# Test function
+# pytest sẽ inject:
+# - fixture "manager"
+# - biến email từ parametrize
 def test_user_not_found(manager, email):
+
+    # pytest.raises dùng để kiểm tra một exception có được raise hay không
+    # Nếu code bên trong không raise exception -> test FAIL
+    # Nếu raise đúng loại exception -> test PASS
     with pytest.raises(UserNotFoundError):
+
+        # Gọi function cần test với email không tồn tại
+        # Trong UserManager, hàm get_user_by_email sẽ raise UserNotFoundError
         manager.get_user_by_email(email)
