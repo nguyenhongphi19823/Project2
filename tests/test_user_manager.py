@@ -173,28 +173,47 @@
 
 
 
-
-import pytest
-from app.user_manager import UserNotFoundError
-
-
+# Test case: kiểm tra trường hợp user tồn tại
+# pytest sẽ tự động inject fixture "manager" vào tham số manager
 def test_get_user_by_email_found(manager):
 
+    # Gọi method get_user_by_email của object manager
+    # để tìm user có email "a@test.com"
     user = manager.get_user_by_email("a@test.com")
 
+    # Kiểm tra role của user trả về có đúng là "admin" hay không
+    # Nếu đúng -> test PASS
+    # Nếu sai -> pytest báo FAIL
     assert user["role"] == "admin"
 
 
+# pytest.mark.parametrize dùng để chạy cùng một test với nhiều dữ liệu khác nhau
 @pytest.mark.parametrize(
+
+    # Khai báo tên biến sẽ được truyền vào test function
+    # Ở đây test function sẽ nhận biến "email"
     "email",
+
+    # Danh sách dữ liệu test
+    # Mỗi giá trị trong list sẽ tạo ra một lần chạy test
     [
-        "x@test.com",
-        "y@test.com",
-        "z@test.com",
+        "x@test.com",  # Test case 1
+        "y@test.com",  # Test case 2
+        "z@test.com",  # Test case 3
     ]
 )
+
+# Test case: kiểm tra khi user không tồn tại
+# pytest sẽ inject:
+# - fixture "manager"
+# - biến email từ parametrize
 def test_user_not_found(manager, email):
 
+    # pytest.raises dùng để kiểm tra xem exception có được raise hay không
+    # Nếu code bên trong không raise exception -> test FAIL
+    # Nếu raise đúng loại exception -> test PASS
     with pytest.raises(UserNotFoundError):
 
+        # Gọi function get_user_by_email với email không tồn tại
+        # Trong class UserManager, method này sẽ raise UserNotFoundError
         manager.get_user_by_email(email)
