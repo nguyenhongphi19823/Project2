@@ -20,28 +20,39 @@ sys.path.append(
 
 
 # Import thư viện pytest để viết fixture và chạy test
+# import pytest
+#
+#
+# # Import class UserManager từ module app.user_manager
+# # Class này chứa logic quản lý user
+# from app.user_manager import UserManager
+#
+#
+# # Import function helper để load dữ liệu user từ file JSON
+# from app.user_manager import load_users_from_file
+#
+#
+# # Khai báo fixture của pytest
+# # Fixture này tạo object UserManager dùng chung cho các test
+# @pytest.fixture
+# def manager():
+#
+#     # Load dữ liệu test từ file JSON
+#     # Hàm load_users_from_file sẽ đọc file app/users.json
+#     # và trả về list các user
+#     users = load_users_from_file("app/users.json")
+#
+#     # Tạo object UserManager với dữ liệu users
+#     # Fixture sẽ return object này để test sử dụng
+#     return UserManager(users)
+
+
+
 import pytest
-
-
-# Import class UserManager từ module app.user_manager
-# Class này chứa logic quản lý user
 from app.user_manager import UserManager
-
-
-# Import function helper để load dữ liệu user từ file JSON
 from app.user_manager import load_users_from_file
 
-
-# Khai báo fixture của pytest
-# Fixture này tạo object UserManager dùng chung cho các test
-@pytest.fixture
+@pytest.fixture(scope="module")
 def manager():
-
-    # Load dữ liệu test từ file JSON
-    # Hàm load_users_from_file sẽ đọc file app/users.json
-    # và trả về list các user
     users = load_users_from_file("app/users.json")
-
-    # Tạo object UserManager với dữ liệu users
-    # Fixture sẽ return object này để test sử dụng
     return UserManager(users)
