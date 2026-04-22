@@ -27,5 +27,5 @@ def test_open_google():
         # chờ 3 giây để nhìn thấy browser
         page.wait_for_timeout(3000)
 
-
+        # đóng browser
         browser.close()
