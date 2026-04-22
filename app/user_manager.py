@@ -120,3 +120,6 @@ def load_users_from_file(filename: str) -> List[Dict[str, Any]]:
 
     # Trả về danh sách users
     return data
+
+
+

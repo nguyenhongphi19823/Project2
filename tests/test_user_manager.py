@@ -224,3 +224,29 @@ def test_user_not_found(manager, email):
         # Gọi function với email không tồn tại
         # Trong UserManager, method này sẽ raise UserNotFoundError
         manager.get_user_by_email(email)
+
+
+
+
+
+# import json để đọc file JSON vừa save
+import json
+
+# test kiểm tra nội dung file sau khi save
+def test_save_file_content(manager, tmp_path):
+
+    # tạo đường dẫn file tạm (không ảnh hưởng project thật)
+    file_path = tmp_path / "output.json"
+
+    # gọi function cần test: ghi dữ liệu user ra file
+    manager.save_to_file(file_path)
+
+    # mở file vừa ghi để đọc lại dữ liệu
+    with open(file_path, "r", encoding="utf-8") as f:
+
+        # load dữ liệu JSON thành Python object (list)
+        data = json.load(f)
+
+    # kiểm tra phần tử đầu tiên có key "email"
+    # đảm bảo dữ liệu ghi ra đúng format
+    assert "email" in data[0]
