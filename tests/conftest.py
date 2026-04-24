@@ -48,11 +48,113 @@ sys.path.append(
 
 
 
+# import pytest
+# from app.user_manager import UserManager
+# from app.user_manager import load_users_from_file
+
+# import pytest để tạo fixture
+
 import pytest
+
+# import sync_playwright để điều khiển browser theo kiểu sync
+
+from playwright.sync_api import sync_playwright
+
+# import UserManager để dùng cho fixture manager cũ
+
 from app.user_manager import UserManager
+
+# import helper load dữ liệu từ JSON
+
 from app.user_manager import load_users_from_file
 
+
+
+
+
+# fixture manager dùng cho test Python/pytest hiện tại
+
 @pytest.fixture(scope="module")
+
 def manager():
+
+    # load dữ liệu user từ file JSON
+
     users = load_users_from_file("app/users.json")
+
+    # trả về object UserManager
+
     return UserManager(users)
+
+
+# fixture playwright để khởi động Playwright engine
+
+@pytest.fixture(scope="session")
+
+def playwright_instance():
+
+    # mở Playwright
+
+    with sync_playwright() as p:
+
+        # yield để cung cấp Playwright object cho test/fixture khác
+
+        yield p
+
+
+
+
+# fixture browser để mở browser 1 lần cho toàn bộ test session
+
+@pytest.fixture(scope="session")
+
+def browser(playwright_instance):
+
+    # mở Chromium browser
+
+    browser = playwright_instance.chromium.launch(headless=False)
+
+    # yield browser cho test/fixture khác dùng
+
+    yield browser
+
+    # đóng browser sau khi toàn bộ test kết thúc
+
+    browser.close()
+
+
+
+
+# fixture page để tạo page mới cho mỗi test
+
+@pytest.fixture(scope="function")
+
+def page(browser):
+
+    # tạo browser context mới
+
+    # context giống như profile riêng biệt, giúp test độc lập
+
+    context = browser.new_context()
+
+    # tạo tab mới
+
+    page = context.new_page()
+
+    # yield page cho test dùng
+
+    yield page
+
+    # đóng context sau mỗi test để clean up
+
+    context.close()
+
+
+
+
+
+#
+# @pytest.fixture(scope="module")
+# def manager():
+#     users = load_users_from_file("app/users.json")
+#     return UserManager(users)
