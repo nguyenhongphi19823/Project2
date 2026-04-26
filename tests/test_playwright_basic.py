@@ -39,3 +39,16 @@ def test_open_example(page):
 
     # kiểm tra title của trang có chứa chữ Example không
     assert "Example" in page.title()
+
+
+# test kiểm tra nội dung heading trên trang example
+def test_example_heading(page):
+
+    # mở website example
+    page.goto("https://example.com")
+
+    # lấy text của thẻ h1
+    heading = page.locator("h1").text_content()
+
+    # kiểm tra heading đúng
+    assert heading == "Example Domain"
