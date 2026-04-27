@@ -1,8 +1,14 @@
 # Không commit file chứa username/password
 .env
 
+# venv
+.venv/
+
 # log
 *.log
 
 # python cache
 __pycache__/
+
+# PyCharm
+.idea/
