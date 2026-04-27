@@ -1,8 +1,18 @@
-# import os để đọc username/password từ environment variable
+# import os để đọc biến môi trường
+
 import os
 
-# import expect để assertion theo kiểu Playwright
+# import load_dotenv để load dữ liệu từ file .env
+
+from dotenv import load_dotenv
+
+# import expect để dùng assertion của Playwright
+
 from playwright.sync_api import expect
+
+# load file .env ở root project
+
+load_dotenv()
 
 
 # test login vào DP360 CRM
@@ -28,6 +38,9 @@ def test_dp360_login(page):
 
     # mở trang login DP360 CRM
     page.goto("https://app.dp360crm.com")
+
+    # đặt kích thước trình duyệt ở chế độ xem tối đa
+    page.set_viewport_size({"width": 1920, "height": 1080})
 
 
 
@@ -74,4 +87,3 @@ def test_dp360_login(page):
 
     # # kiểm tra sau login URL không còn là trang login
     # expect(page).not_to_have_url("https://app.dp360crm.com/")
-
