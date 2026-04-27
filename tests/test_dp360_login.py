@@ -15,6 +15,38 @@ from playwright.sync_api import expect
 load_dotenv()
 
 
+
+# test kiểm tra form login hiển thị đúng
+
+def test_dp360_login_page_ui(page):
+
+    # mở trang login DP360 CRM
+
+    page.goto("https://app.dp360crm.com")
+
+    # kiểm tra ô username hiển thị
+
+    expect(page.get_by_placeholder("Enter your username or email")).to_be_visible()
+
+
+    # kiểm tra ô password hiển thị
+
+    expect(page.get_by_placeholder("Enter your password")).to_be_visible()
+
+    # kiểm tra nút Login hiển thị
+
+    expect(page.get_by_role("button", name="Login")).to_be_visible()
+
+
+
+    # kiểm tra text Forgot your password hiển thị
+
+    expect(page.get_by_text("Forgot your password?")).to_be_visible()
+
+
+
+
+
 # test login vào DP360 CRM
 def test_dp360_login(page):
 
