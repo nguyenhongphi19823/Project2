@@ -80,6 +80,8 @@ def test_dp360_login(page):
     login_page = LoginPage(page)
     # mở trang login
     login_page.open()
+    # đặt kích thước trình duyệt ở chế độ xem tối đa
+    page.set_viewport_size({"width": 1920, "height": 1080})
     # thực hiện login
     login_page.login(username, password)
     # chờ trang load xong sau khi login
