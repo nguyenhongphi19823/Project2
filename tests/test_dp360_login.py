@@ -67,24 +67,46 @@ def test_dp360_login_page_ui(page):
 #     expect(page).not_to_have_url(re.compile(r".*/login.*"))
 
 # test login DP360 CRM
+# def test_dp360_login(page):
+#     # đọc username từ .env
+#     username = os.getenv("DP360_USERNAME")
+#     # đọc password từ .env
+#     password = os.getenv("DP360_PASSWORD")
+#     # kiểm tra username có tồn tại không
+#     assert username, "DP360_USERNAME is missing"
+#     # kiểm tra password có tồn tại không
+#     assert password, "DP360_PASSWORD is missing"
+#     # tạo object LoginPage
+#     login_page = LoginPage(page)
+#     # mở trang login
+#     login_page.open()
+#     # đặt kích thước trình duyệt ở chế độ xem tối đa
+#     page.set_viewport_size({"width": 1920, "height": 1080})
+#     # thực hiện login
+#     login_page.login(username, password)
+#     # chờ trang load xong sau khi login
+#     page.wait_for_load_state("networkidle")
+#     # kiểm tra URL sau login không còn chứa /login
+#     assert "/login" not in page.url
+
+
+# import LoginPage
+from pages.login_page import LoginPage
+
+
 def test_dp360_login(page):
-    # đọc username từ .env
-    username = os.getenv("DP360_USERNAME")
-    # đọc password từ .env
-    password = os.getenv("DP360_PASSWORD")
-    # kiểm tra username có tồn tại không
-    assert username, "DP360_USERNAME is missing"
-    # kiểm tra password có tồn tại không
-    assert password, "DP360_PASSWORD is missing"
-    # tạo object LoginPage
+
+    # tạo object login page
     login_page = LoginPage(page)
+
     # mở trang login
     login_page.open()
-    # đặt kích thước trình duyệt ở chế độ xem tối đa
-    page.set_viewport_size({"width": 1920, "height": 1080})
-    # thực hiện login
+
+    # login
     login_page.login(username, password)
-    # chờ trang load xong sau khi login
-    page.wait_for_load_state("networkidle")
-    # kiểm tra URL sau login không còn chứa /login
-    assert "/login" not in page.url
+
+    # chờ load
+    login_page.wait_for_page_load()
+
+    # assert URL
+    login_page.assert_url_not_contains("/login")
