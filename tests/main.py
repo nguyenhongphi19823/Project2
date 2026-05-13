@@ -322,7 +322,7 @@ import logging  # Logging chuyên nghiệp thay cho print (có level, timestamp,
 logging.basicConfig(
     level=logging.INFO,  # Chỉ ghi log từ INFO trở lên (INFO/WARNING/ERROR/CRITICAL). DEBUG sẽ bị bỏ qua
     format="%(asctime)s - %(levelname)s - %(message)s",  # Format: thời gian - level - message
-    filename="automation.log",  # Ghi log vào file automation.log (không chỉ in ra console)
+    filename="../automation.log",  # Ghi log vào file automation.log (không chỉ in ra console)
     filemode="a"  # Append: chạy lần sau sẽ ghi nối tiếp, không ghi đè file cũ
 )
 
@@ -334,7 +334,7 @@ logger = logging.getLogger(__name__)
 # =========================
 try:
     # Mở file users.json ở chế độ đọc ("r"); with giúp tự đóng file sau khi đọc xong
-    with open("app/users.json", "r") as file:
+    with open("../app/users.json", "r") as file:
         # json.load(file) chuyển JSON -> Python object
         # Nếu JSON bắt đầu bằng [ ... ] thì data sẽ là list; mỗi phần tử là dict user
         data = json.load(file)
