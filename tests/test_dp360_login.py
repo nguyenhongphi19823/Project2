@@ -143,3 +143,14 @@ def test_dp360_login(page):
 
 
 
+# test cố tình fail
+def test_fail_example(page):
+
+    # mở login page
+    page.goto("https://app.dp360crm.com/login")
+
+    # fail cố tình
+    assert False
+
+
+

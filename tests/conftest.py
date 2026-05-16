@@ -158,3 +158,49 @@ def page(browser):
 # def manager():
 #     users = load_users_from_file("app/users.json")
 #     return UserManager(users)
+
+
+
+# import pytest
+import pytest
+
+# import thư viện xử lý thời gian
+import time
+
+
+# fixture tự chụp screenshot khi test fail
+@pytest.fixture(autouse=True)
+
+def screenshot_on_failure(request, page):
+
+    # yield để test chạy trước
+    yield
+
+    # lấy kết quả test sau khi chạy xong
+    if request.node.rep_call.failed:
+
+        # tạo tên file screenshot theo timestamp
+        screenshot_name = f"screenshots/{int(time.time())}.png"
+
+        # chụp screenshot
+        page.screenshot(path=screenshot_name)
+
+        # in ra path để debug
+        print(f"\nScreenshot saved: {screenshot_name}")
+
+
+
+
+# hook của pytest để lấy kết quả test
+@pytest.hookimpl(hookwrapper=True)
+
+def pytest_runtest_makereport(item, call):
+
+    # execute toàn bộ hook khác trước
+    outcome = yield
+
+    # lấy kết quả report
+    rep = outcome.get_result()
+
+    # lưu kết quả vào item
+    setattr(item, "rep_" + rep.when, rep)
