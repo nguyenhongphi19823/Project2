@@ -204,3 +204,67 @@ def pytest_runtest_makereport(item, call):
 
     # lưu kết quả vào item
     setattr(item, "rep_" + rep.when, rep)
+
+
+
+
+
+# fixture page
+@pytest.fixture(scope="function")
+
+def page(browser):
+
+    # tạo context có bật video
+    context = browser.new_context(
+
+        # folder lưu video
+        record_video_dir="videos/"
+    )
+
+    # tạo page mới
+    page = context.new_page()
+
+    # yield page cho test
+    yield page
+
+    # đóng context để save video
+    context.close()
+
+
+
+
+# fixture page
+@pytest.fixture(scope="function")
+
+def page(browser):
+
+    # tạo context mới
+    context = browser.new_context()
+
+    # bật tracing
+    context.tracing.start(
+
+        # capture screenshot
+        screenshots=True,
+
+        # capture DOM snapshot
+        snapshots=True,
+
+        # capture source
+        sources=True
+    )
+
+    # tạo page mới
+    page = context.new_page()
+
+    # yield page
+    yield page
+
+    # stop tracing và save zip
+    context.tracing.stop(
+
+        path="traces/trace.zip"
+    )
+
+    # đóng context
+    context.close()
