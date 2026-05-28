@@ -15,3 +15,12 @@ __pycache__/
 
 # IDE
 .vscode/
+
+# bỏ qua video record của Playwright
+videos/
+
+# bỏ qua screenshot debug
+screenshots/
+
+# bỏ qua trace debug
+traces/

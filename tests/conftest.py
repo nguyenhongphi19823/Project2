@@ -69,3 +69,19 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     rep = outcome.get_result()
     setattr(item, "rep_" + rep.when, rep)
+
+
+
+# fixture API context
+@pytest.fixture(scope="function")
+
+def api_context(playwright):
+
+    # tạo context
+    context = playwright.request.new_context()
+
+    # yield cho test dùng
+    yield context
+
+    # cleanup
+    context.dispose()

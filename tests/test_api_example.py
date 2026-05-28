@@ -92,3 +92,18 @@ def test_create_user_api():
 
     # kiểm tra response có field id do API tự tạo
     assert "id" in response_data
+
+
+
+#-------
+# test API dùng fixture
+def test_get_users(api_context):
+
+    # gửi GET request
+    response = api_context.get(
+
+        "https://jsonplaceholder.typicode.com/users"
+    )
+
+    # verify status
+    assert response.status == 200
