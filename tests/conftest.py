@@ -85,3 +85,27 @@ def api_context(playwright):
 
     # cleanup
     context.dispose()
+
+
+# import pytest để tạo fixture
+import pytest
+
+
+# fixture tạo page đã login sẵn
+@pytest.fixture(scope="function")
+def logged_in_page(browser):
+
+    # tạo context mới và load storage_state đã lưu
+    context = browser.new_context(
+        # dùng file auth/storage_state.json để khôi phục login session
+        storage_state="auth/storage_state.json"
+    )
+
+    # tạo tab mới từ context đã login
+    page = context.new_page()
+
+    # yield page cho test sử dụng
+    yield page
+
+    # đóng context sau khi test xong để clean up
+    context.close()

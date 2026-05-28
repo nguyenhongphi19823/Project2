@@ -24,3 +24,7 @@ screenshots/
 
 # bỏ qua trace debug
 traces/
+
+# bỏ qua session login Playwright
+
+auth/storage_state.json
