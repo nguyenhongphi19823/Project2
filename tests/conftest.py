@@ -166,3 +166,86 @@ def browser(playwright_instance):
 
     # đóng browser sau khi toàn bộ test chạy xong
     browser.close()
+
+
+
+# import pytest để dùng fixture và hook của pytest
+import pytest
+
+
+# hook pytest_addoption dùng để thêm custom command line option
+def pytest_addoption(parser):
+
+    # thêm option --browser vào pytest command
+    parser.addoption(
+        # tên option khi chạy command line
+        "--browser",
+
+        # action="store" nghĩa là lưu giá trị người dùng truyền vào
+        action="store",
+
+        # giá trị mặc định nếu user không truyền --browser
+        default="chromium",
+
+        # mô tả option này dùng để làm gì
+        help="Browser to run tests: chromium, firefox, or webkit"
+    )
+
+    # thêm option --headless vào pytest command
+    parser.addoption(
+        # tên option khi chạy command line
+        "--headless",
+
+        # action="store" nghĩa là lưu giá trị người dùng truyền vào
+        action="store",
+
+        # giá trị mặc định nếu user không truyền --headless
+        default="false",
+
+        # mô tả option này dùng để làm gì
+        help="Run browser in headless mode: true or false"
+    )
+
+
+# fixture browser dùng cho toàn bộ test session
+@pytest.fixture(scope="session")
+def browser(playwright_instance, request):
+
+    # lấy giá trị browser từ command line option --browser
+    browser_name = request.config.getoption("--browser")
+
+    # lấy giá trị headless từ command line option --headless
+    headless_value = request.config.getoption("--headless")
+
+    # convert string "true"/"false" thành boolean True/False
+    headless = headless_value.lower() == "true"
+
+    # nếu browser_name là chromium
+    if browser_name == "chromium":
+
+        # mở Chromium browser
+        browser = playwright_instance.chromium.launch(headless=headless)
+
+    # nếu browser_name là firefox
+    elif browser_name == "firefox":
+
+        # mở Firefox browser
+        browser = playwright_instance.firefox.launch(headless=headless)
+
+    # nếu browser_name là webkit
+    elif browser_name == "webkit":
+
+        # mở WebKit browser
+        browser = playwright_instance.webkit.launch(headless=headless)
+
+    # nếu browser_name không hợp lệ
+    else:
+
+        # báo lỗi rõ ràng để dễ debug
+        raise ValueError(f"Unsupported browser: {browser_name}")
+
+    # trả browser cho các test sử dụng
+    yield browser
+
+    # đóng browser sau khi toàn bộ test session kết thúc
+    browser.close()
