@@ -115,42 +115,86 @@
 
 
 
+#
+#
+# # import pytest để dùng marker
+# import pytest
+#
+# # import LoginPage
+# from pages.login_page import LoginPage
+#
+#
+# # đánh dấu đây là smoke test
+# @pytest.mark.smoke
+#
+# # đánh dấu đây là login test
+# @pytest.mark.login
+#
+# def test_dp360_login(page):
+#
+#     # tạo LoginPage
+#     login_page = LoginPage(page)
+#
+#     # mở login page
+#     login_page.open()
+#
+#     # login
+#     login_page.login("admin@test.com", "123456")
+#
+#
+#
+# # test cố tình fail
+# def test_fail_example(page):
+#
+#     # mở login page
+#     page.goto("https://app.dp360crm.com/login")
+#
+#     # fail cố tình
+#     assert False
+#
+#
+#
 
-
-# import pytest để dùng marker
-import pytest
-
-# import LoginPage
+# import LoginPage từ pages
 from pages.login_page import LoginPage
 
+# import username/password từ config
+from config.settings import USERNAME, PASSWORD
 
-# đánh dấu đây là smoke test
-@pytest.mark.smoke
 
-# đánh dấu đây là login test
-@pytest.mark.login
+# test kiểm tra UI login page
+def test_dp360_login_page_ui(page):
 
-def test_dp360_login(page):
-
-    # tạo LoginPage
+    # tạo object LoginPage
     login_page = LoginPage(page)
 
-    # mở login page
+    # mở trang login
     login_page.open()
 
-    # login
-    login_page.login("admin@test.com", "123456")
+    # verify UI login page hiển thị
+    login_page.verify_login_page_is_visible()
 
 
+# test login thành công
+def test_dp360_login(page):
 
-# test cố tình fail
-def test_fail_example(page):
+    # kiểm tra username không bị thiếu
+    assert USERNAME, "DP360_USERNAME is missing"
 
-    # mở login page
-    page.goto("https://app.dp360crm.com/login")
+    # kiểm tra password không bị thiếu
+    assert PASSWORD, "DP360_PASSWORD is missing"
 
-    # fail cố tình
-    assert False
+    # tạo object LoginPage
+    login_page = LoginPage(page)
 
+    # mở trang login
+    login_page.open()
 
+    # login bằng data từ config
+    login_page.login(USERNAME, PASSWORD)
 
+    # chờ page load xong
+    login_page.wait_for_page_load()
+
+    # kiểm tra URL không còn chứa /login
+    login_page.assert_url_not_contains("/login")

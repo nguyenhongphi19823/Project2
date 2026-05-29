@@ -39,46 +39,172 @@
 #         self.password_input.fill(password)
 #         # click button Login
 #         self.login_button.click()
+#
+#
+# # import BasePage
+# from pages.base_page import BasePage
+#
+# # import expect
+# from playwright.sync_api import expect
+#
+#
+# # LoginPage kế thừa BasePage
+# class LoginPage(BasePage):
+#
+#     def __init__(self, page):
+#
+#         # gọi constructor của BasePage
+#         super().__init__(page)
+#
+#         # locator username
+#         self.username_input = page.get_by_placeholder("Enter your username or email")
+#
+#         # locator password
+#         self.password_input = page.get_by_placeholder("Enter your password")
+#
+#         # locator login button
+#         self.login_button = page.get_by_role("button", name="Login")
+#
+#
+#     def open(self):
+#
+#         # dùng BasePage
+#         self.open_url("https://app.dp360crm.com/login")
+#
+#
+#     def login(self, username, password):
+#
+#         # dùng BasePage.fill
+#         self.fill(self.username_input, username)
+#
+#         # dùng BasePage.fill
+#         self.fill(self.password_input, password)
+#
+#         # dùng BasePage.click
+#         self.click(self.login_button)
+#
+#
+# # import BasePage để kế thừa các action chung
+# from pages.base_page import BasePage
+#
+# # import BASE_URL từ config
+# from config.settings import BASE_URL
+#
+#
+# # class LoginPage đại diện cho trang login
+# class LoginPage(BasePage):
+#
+#     # constructor nhận page từ Playwright
+#     def __init__(self, page):
+#
+#         # gọi constructor của BasePage
+#         super().__init__(page)
+#
+#         # locator ô username
+#         self.username_input = page.get_by_placeholder("Enter your username or email")
+#
+#         # locator ô password
+#         self.password_input = page.get_by_placeholder("Enter your password")
+#
+#         # locator nút Login
+#         self.login_button = page.get_by_role("button", name="Login")
+#
+#         # locator link Forgot your password
+#         self.forgot_password_link = page.get_by_text("Forgot your password?")
+#
+#     # method mở trang login
+#     def open(self):
+#
+#         # mở URL login bằng BASE_URL từ config
+#         self.open_url(f"{BASE_URL}/login")
+#
+#     # method login
+#     def login(self, username, password):
+#
+#         # điền username
+#         self.fill(self.username_input, username)
+#
+#         # điền password
+#         self.fill(self.password_input, password)
+#
+#         # click nút Login
+#         self.click(self.login_button)
+#
+#     # method kiểm tra login page hiển thị
+#     def verify_login_page_is_visible(self):
+#
+#         # kiểm tra username input hiển thị
+#         self.is_visible(self.username_input)
+#
+#         # kiểm tra password input hiển thị
+#         self.is_visible(self.password_input)
+#
+#         # kiểm tra Login button hiển thị
+#         self.is_visible(self.login_button)
+#
+#         # kiểm tra Forgot password link hiển thị
+#         self.is_visible(self.forgot_password_link)
+#
+#
 
 
-# import BasePage
+# import BasePage để kế thừa các action chung
 from pages.base_page import BasePage
 
-# import expect
-from playwright.sync_api import expect
+# import BASE_URL từ config
+from config.settings import BASE_URL
 
 
-# LoginPage kế thừa BasePage
+# class LoginPage đại diện cho trang login
 class LoginPage(BasePage):
 
+    # constructor nhận page từ Playwright
     def __init__(self, page):
 
         # gọi constructor của BasePage
         super().__init__(page)
 
-        # locator username
+        # locator ô username
         self.username_input = page.get_by_placeholder("Enter your username or email")
 
-        # locator password
+        # locator ô password
         self.password_input = page.get_by_placeholder("Enter your password")
 
-        # locator login button
+        # locator nút Login
         self.login_button = page.get_by_role("button", name="Login")
 
+        # locator link Forgot your password
+        self.forgot_password_link = page.get_by_text("Forgot your password?")
 
+    # method mở trang login
     def open(self):
 
-        # dùng BasePage
-        self.open_url("https://app.dp360crm.com/login")
+        # mở URL login bằng BASE_URL từ config
+        self.open_url(f"{BASE_URL}/login")
 
-
+    # method login
     def login(self, username, password):
 
-        # dùng BasePage.fill
+        # điền username
         self.fill(self.username_input, username)
 
-        # dùng BasePage.fill
+        # điền password
         self.fill(self.password_input, password)
 
-        # dùng BasePage.click
+        # click nút Login
         self.click(self.login_button)
+
+    # method kiểm tra login page hiển thị
+    def verify_login_page_is_visible(self):
+
+        # kiểm tra username input hiển thị
+        self.is_visible(self.username_input)
+
+        # kiểm tra password input hiển thị
+        self.is_visible(self.password_input)
+
+        # kiểm tra Login button hiển thị
+        self.is_visible(self.login_button)
+
+        # kiểm tra Forgot password link hiển thị
+        self.is_visible(self.forgot_password_link)

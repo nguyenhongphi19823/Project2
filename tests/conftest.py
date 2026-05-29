@@ -109,3 +109,60 @@ def logged_in_page(browser):
 
     # đóng context sau khi test xong để clean up
     context.close()
+
+
+
+# import pytest để tạo fixture
+import pytest
+
+# import sync_playwright để dùng Playwright
+from playwright.sync_api import sync_playwright
+
+# import HEADLESS và BROWSER từ config
+from config.settings import HEADLESS, BROWSER
+
+
+# fixture khởi động Playwright engine
+@pytest.fixture(scope="session")
+def playwright_instance():
+
+    # mở Playwright
+    with sync_playwright() as p:
+
+        # trả Playwright object cho fixture khác
+        yield p
+
+
+# fixture browser dùng cho toàn bộ test session
+@pytest.fixture(scope="session")
+def browser(playwright_instance):
+
+    # nếu BROWSER là chromium thì mở chromium
+    if BROWSER == "chromium":
+
+        # launch chromium với headless lấy từ config
+        browser = playwright_instance.chromium.launch(headless=HEADLESS)
+
+    # nếu BROWSER là firefox thì mở firefox
+    elif BROWSER == "firefox":
+
+        # launch firefox với headless lấy từ config
+        browser = playwright_instance.firefox.launch(headless=HEADLESS)
+
+    # nếu BROWSER là webkit thì mở webkit
+    elif BROWSER == "webkit":
+
+        # launch webkit với headless lấy từ config
+        browser = playwright_instance.webkit.launch(headless=HEADLESS)
+
+    # nếu BROWSER không hợp lệ thì báo lỗi
+    else:
+
+        # raise lỗi rõ ràng
+        raise ValueError(f"Unsupported browser: {BROWSER}")
+
+    # trả browser cho test dùng
+    yield browser
+
+    # đóng browser sau khi toàn bộ test chạy xong
+    browser.close()
