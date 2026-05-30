@@ -28,3 +28,9 @@ traces/
 # bỏ qua session login Playwright
 
 auth/storage_state.json
+
+# ignore log files
+logs/
+
+# ignore all log files
+*.log
