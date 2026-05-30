@@ -208,3 +208,89 @@ class LoginPage(BasePage):
 
         # kiểm tra Forgot password link hiển thị
         self.is_visible(self.forgot_password_link)
+
+
+
+
+
+
+
+# import BasePage để LoginPage kế thừa action chung
+from pages.base_page import BasePage
+
+# import BASE_URL từ config settings
+from config.settings import BASE_URL
+
+# import get_logger để tạo logger
+from utils.logger import get_logger
+
+
+# tạo logger cho LoginPage
+logger = get_logger(__name__)
+
+
+# class LoginPage đại diện cho trang login
+class LoginPage(BasePage):
+
+    # constructor nhận page từ Playwright
+    def __init__(self, page):
+
+        # gọi constructor của BasePage
+        super().__init__(page)
+
+        # locator ô username
+        self.username_input = page.get_by_placeholder("Enter your username or email")
+
+        # locator ô password
+        self.password_input = page.get_by_placeholder("Enter your password")
+
+        # locator nút Login
+        self.login_button = page.get_by_role("button", name="Login")
+
+        # locator link Forgot your password
+        self.forgot_password_link = page.get_by_text("Forgot your password?")
+
+
+    # method mở trang login
+    def open(self):
+
+        # ghi log mở trang login
+        logger.info("Opening login page")
+
+        # mở URL login bằng BASE_URL
+        self.open_url(f"{BASE_URL}/login")
+
+
+    # method verify UI login page
+    def verify_login_page_is_visible(self):
+
+        # ghi log bắt đầu verify login page
+        logger.info("Verifying login page UI")
+
+        # verify username input hiển thị
+        self.is_visible(self.username_input)
+
+        # verify password input hiển thị
+        self.is_visible(self.password_input)
+
+        # verify login button hiển thị
+        self.is_visible(self.login_button)
+
+        # verify forgot password link hiển thị
+        self.is_visible(self.forgot_password_link)
+
+
+    # method login
+    def login(self, username, password):
+
+        # ghi log bắt đầu login, chỉ log username, không log password
+        logger.info(f"Logging in with username: {username}")
+
+        # fill username
+        self.fill(self.username_input, username)
+
+        # fill password
+        self.fill(self.password_input, password)
+
+        # click login button
+        self.click(self.login_button)
