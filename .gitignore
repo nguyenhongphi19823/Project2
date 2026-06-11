@@ -34,3 +34,6 @@ logs/
 
 # ignore all log files
 *.log
+
+# bỏ qua report test tự sinh
+reports/
