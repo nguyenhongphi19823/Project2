@@ -37,3 +37,9 @@ logs/
 
 # bỏ qua report test tự sinh
 reports/
+
+# ignore allure raw results
+allure-results/
+
+# ignore allure generated report
+allure-report/

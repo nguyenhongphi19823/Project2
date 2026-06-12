@@ -155,46 +155,99 @@
 #
 #
 
-# import LoginPage từ pages
+# # import LoginPage từ pages
+# from pages.login_page import LoginPage
+#
+# # import username/password từ config
+# from config.settings import USERNAME, PASSWORD
+#
+#
+# # test kiểm tra UI login page
+# def test_dp360_login_page_ui(page):
+#
+#     # tạo object LoginPage
+#     login_page = LoginPage(page)
+#
+#     # mở trang login
+#     login_page.open()
+#
+#     # verify UI login page hiển thị
+#     login_page.verify_login_page_is_visible()
+#
+#
+# # test login thành công
+# def test_dp360_login(page):
+#
+#     # kiểm tra username không bị thiếu
+#     assert USERNAME, "DP360_USERNAME is missing"
+#
+#     # kiểm tra password không bị thiếu
+#     assert PASSWORD, "DP360_PASSWORD is missing"
+#
+#     # tạo object LoginPage
+#     login_page = LoginPage(page)
+#
+#     # mở trang login
+#     login_page.open()
+#
+#     # login bằng data từ config
+#     login_page.login(USERNAME, PASSWORD)
+#
+#     # chờ page load xong
+#     login_page.wait_for_page_load()
+#
+#     # kiểm tra URL không còn chứa /login
+#     login_page.assert_url_not_contains("/login")
+
+
+# import allure để dùng allure.step
+import allure
+
+# import LoginPage từ Page Object
 from pages.login_page import LoginPage
 
-# import username/password từ config
+# import USERNAME và PASSWORD từ config
 from config.settings import USERNAME, PASSWORD
 
 
-# test kiểm tra UI login page
-def test_dp360_login_page_ui(page):
+# đánh dấu feature Login
+@allure.feature("Login")
 
-    # tạo object LoginPage
-    login_page = LoginPage(page)
-
-    # mở trang login
-    login_page.open()
-
-    # verify UI login page hiển thị
-    login_page.verify_login_page_is_visible()
-
+# đặt title test case
+@allure.title("Verify login with valid credentials")
 
 # test login thành công
 def test_dp360_login(page):
 
-    # kiểm tra username không bị thiếu
-    assert USERNAME, "DP360_USERNAME is missing"
+    # step 1: kiểm tra test data
+    with allure.step("Verify username and password are available"):
 
-    # kiểm tra password không bị thiếu
-    assert PASSWORD, "DP360_PASSWORD is missing"
+        # kiểm tra username không thiếu
+        assert USERNAME, "DP360_USERNAME is missing"
 
-    # tạo object LoginPage
-    login_page = LoginPage(page)
+        # kiểm tra password không thiếu
+        assert PASSWORD, "DP360_PASSWORD is missing"
 
-    # mở trang login
-    login_page.open()
+    # step 2: mở login page
+    with allure.step("Open login page"):
 
-    # login bằng data từ config
-    login_page.login(USERNAME, PASSWORD)
+        # tạo LoginPage object
+        login_page = LoginPage(page)
 
-    # chờ page load xong
-    login_page.wait_for_page_load()
+        # mở login page
+        login_page.open()
 
-    # kiểm tra URL không còn chứa /login
-    login_page.assert_url_not_contains("/login")
+    # step 3: thực hiện login
+    with allure.step("Login with valid credentials"):
+
+        # login bằng username/password
+        login_page.login(USERNAME, PASSWORD)
+
+    # step 4: verify login thành công
+    with allure.step("Verify login success"):
+
+        # chờ page load xong
+        login_page.wait_for_page_load()
+
+        # kiểm tra không còn ở login page
+        login_page.assert_url_not_contains("/login")

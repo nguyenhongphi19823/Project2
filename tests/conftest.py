@@ -91,3 +91,63 @@ def logged_in_page(browser):
     page_obj = context.new_page()
     yield page_obj
     context.close()
+
+
+
+
+# import allure để attach file vào report
+import allure
+
+# import pytest để dùng fixture và hook
+import pytest
+
+# import time để tạo tên file theo timestamp
+import time
+
+# import os để tạo folder nếu chưa có
+import os
+
+
+# tạo folder screenshots nếu chưa có
+os.makedirs("screenshots", exist_ok=True)
+
+
+# fixture tự động chạy cho mỗi test
+@pytest.fixture(autouse=True)
+def attach_screenshot_on_failure(request, page):
+
+    # cho test chạy trước
+    yield
+
+    # kiểm tra test có bị fail ở phase call không
+    if hasattr(request.node, "rep_call") and request.node.rep_call.failed:
+
+        # tạo đường dẫn screenshot
+        screenshot_path = f"screenshots/{request.node.name}_{int(time.time())}.png"
+
+        # chụp screenshot
+        page.screenshot(path=screenshot_path, full_page=True)
+
+        # mở file screenshot dạng binary
+        with open(screenshot_path, "rb") as image_file:
+
+            # attach screenshot vào Allure report
+            allure.attach(
+                image_file.read(),
+                name="failure_screenshot",
+                attachment_type=allure.attachment_type.PNG
+            )
+
+
+# hook lấy kết quả pass/fail của từng phase test
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+
+    # chạy các hook khác trước
+    outcome = yield
+
+    # lấy report result
+    rep = outcome.get_result()
+
+    # gắn report vào item để fixture đọc được
+    setattr(item, "rep_" + rep.when, rep)
