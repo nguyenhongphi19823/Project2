@@ -43,3 +43,8 @@ allure-results/
 
 # ignore allure generated report
 allure-report/
+allure-results/
+
+# ignore auth storage state
+
+auth/storage_state.json
