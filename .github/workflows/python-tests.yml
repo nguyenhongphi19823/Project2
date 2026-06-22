@@ -1,106 +1,110 @@
-# tên workflow hiển thị trên tab Actions của GitHub
-name: Python Playwright Tests
+# tên workflow hiển thị trên GitHub Actions
+name: Python Playwright Smoke Tests
 
 # điều kiện chạy workflow
 on:
-  # chạy khi push code lên branch master
+  # chạy khi push lên branch master
   push:
     # danh sách branch được trigger
     branches:
-      # branch master của repo bạn
+      # branch master của repo
       - master
 
   # chạy khi tạo pull request vào branch master
   pull_request:
     # danh sách branch target
     branches:
-      # branch master của repo bạn
+      # branch master của repo
       - master
 
-  # cho phép chạy thủ công bằng nút Run workflow trên GitHub
+  # cho phép chạy thủ công từ GitHub UI
   workflow_dispatch:
 
-# danh sách job trong workflow
+# danh sách job
 jobs:
-  # tên job
-  test:
-    # chạy trên máy ảo Ubuntu mới nhất của GitHub
+  # job chạy smoke test
+  smoke:
+    # máy ảo Ubuntu mới nhất
     runs-on: ubuntu-latest
 
-    # các bước chạy trong job
+    # cấu hình matrix
+    strategy:
+      # không dừng toàn bộ matrix nếu 1 browser fail
+      fail-fast: false
+
+      # danh sách biến matrix
+      matrix:
+        # chạy test trên 3 browser
+        browser: [chromium, firefox, webkit]
+
+    # tên job hiển thị trên GitHub Actions
+    name: Smoke tests - ${{ matrix.browser }}
+
+    # danh sách step
     steps:
-      # bước 1: checkout source code từ repo
+      # lấy source code từ GitHub repo
       - name: Checkout code
-        # dùng action checkout để lấy code về runner
         uses: actions/checkout@v4
 
-      # bước 2: cài Python
+      # cài Python
       - name: Set up Python
-        # dùng action setup-python để cài Python vào runner
         uses: actions/setup-python@v5
-        # cấu hình cho setup-python
         with:
-          # version Python muốn dùng
+          # dùng Python 3.12
           python-version: "3.12"
 
-      # bước 3: cài dependencies Python
+      # cài Python dependencies
       - name: Install Python dependencies
-        # chạy nhiều command shell
         run: |
           # nâng cấp pip
           python -m pip install --upgrade pip
-          # cài package từ requirements.txt
+
+          # cài thư viện từ requirements.txt
           python -m pip install -r requirements.txt
 
-      # bước 4: cài browser và system dependencies cho Playwright
+      # cài browser Playwright
       - name: Install Playwright browsers
-        # cài browser kèm Linux dependencies cần thiết
         run: |
-          # cài browser và dependencies cho CI Linux
+          # cài browser và Linux dependencies cho Playwright
           python -m playwright install --with-deps
 
-        # bước 5: chạy smoke test
+      # chạy smoke test
       - name: Run smoke tests
-        # truyền biến môi trường vào test
         env:
-          # base url lấy từ GitHub Secret
+          # base URL lấy từ GitHub Secrets
           DP360_BASE_URL: ${{ secrets.DP360_BASE_URL }}
 
-          # username lấy từ GitHub Secret
+          # username lấy từ GitHub Secrets
           DP360_USERNAME: ${{ secrets.DP360_USERNAME }}
 
-          # password lấy từ GitHub Secret
+          # password lấy từ GitHub Secrets
           DP360_PASSWORD: ${{ secrets.DP360_PASSWORD }}
 
-          # chạy headless trên CI
+          # trên CI nên chạy headless
           HEADLESS: "true"
 
-          # dùng chromium trên CI
-          BROWSER: "chromium"
+          # browser lấy từ matrix
+          BROWSER: ${{ matrix.browser }}
 
-        # command chạy smoke test
         run: |
           # tạo folder reports nếu chưa có
           mkdir -p reports
 
-        # chạy only smoke test và tạo report HTML
-          python -m pytest -m smoke -v --tb=short --html=reports/smoke-report.html --self-contained-html
+          # chạy smoke test và tạo report riêng theo browser
+          python -m pytest -m smoke -v --tb=short --browser ${{ matrix.browser }} --headless true --html=reports/smoke-${{ matrix.browser }}-report.html --self-contained-html
 
-      # bước 6: upload report/log khi chạy xong
+      # upload report/log/screenshot/video/trace
       - name: Upload test artifacts
-        # luôn chạy bước này dù test pass hay fail
         if: always()
-        # dùng action upload-artifact để lưu file kết quả
         uses: actions/upload-artifact@v4
-        # cấu hình artifact
         with:
-          # tên artifact trên GitHub Actions
-          name: test-artifacts
-          # các folder/file cần upload
+          # tên artifact có kèm browser
+          name: smoke-artifacts-${{ matrix.browser }}
+
+          # danh sách folder cần upload
           path: |
             reports/
             logs/
             screenshots/
             videos/
             traces/
-            allure-results/
