@@ -59,24 +59,32 @@ jobs:
           # cài browser và dependencies cho CI Linux
           python -m playwright install --with-deps
 
-      # bước 5: chạy pytest
-      - name: Run tests
-        # truyền env vào test
+        # bước 5: chạy smoke test
+      - name: Run smoke tests
+        # truyền biến môi trường vào test
         env:
-          # base url lấy từ GitHub Secret hoặc mặc định production
+          # base url lấy từ GitHub Secret
           DP360_BASE_URL: ${{ secrets.DP360_BASE_URL }}
+
           # username lấy từ GitHub Secret
           DP360_USERNAME: ${{ secrets.DP360_USERNAME }}
+
           # password lấy từ GitHub Secret
           DP360_PASSWORD: ${{ secrets.DP360_PASSWORD }}
+
           # chạy headless trên CI
           HEADLESS: "true"
+
           # dùng chromium trên CI
           BROWSER: "chromium"
-        # command chạy test
+
+        # command chạy smoke test
         run: |
-          # chạy pytest và tạo report HTML
-          python -m pytest -v --tb=short --html=reports/report.html --self-contained-html
+          # tạo folder reports nếu chưa có
+          mkdir -p reports
+
+        # chạy only smoke test và tạo report HTML
+          python -m pytest -m smoke -v --tb=short --html=reports/smoke-report.html --self-contained-html
 
       # bước 6: upload report/log khi chạy xong
       - name: Upload test artifacts

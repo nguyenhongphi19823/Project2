@@ -251,3 +251,48 @@ def test_dp360_login(page):
 
         # kiểm tra không còn ở login page
         login_page.assert_url_not_contains("/login")
+
+
+# import pytest để dùng marker
+import pytest
+
+# import LoginPage từ Page Object
+from pages.login_page import LoginPage
+
+# import USERNAME và PASSWORD từ config
+from config.settings import USERNAME, PASSWORD
+
+
+# đánh dấu đây là smoke test
+@pytest.mark.smoke
+
+# đánh dấu test này cũng là regression test
+
+@pytest.mark.regression
+
+# đánh dấu đây là login test
+@pytest.mark.login
+
+# test login thành công
+def test_dp360_login(page):
+
+    # kiểm tra username không bị thiếu
+    assert USERNAME, "DP360_USERNAME is missing"
+
+    # kiểm tra password không bị thiếu
+    assert PASSWORD, "DP360_PASSWORD is missing"
+
+    # tạo object LoginPage
+    login_page = LoginPage(page)
+
+    # mở trang login
+    login_page.open()
+
+    # login bằng username/password từ config
+    login_page.login(USERNAME, PASSWORD)
+
+    # chờ page load xong
+    login_page.wait_for_page_load()
+
+    # kiểm tra URL không còn chứa /login
+    login_page.assert_url_not_contains("/login")

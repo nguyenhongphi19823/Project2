@@ -1,0 +1,62 @@
+# tên workflow hiển thị trên GitHub Actions
+name: Regression Tests
+
+# điều kiện chạy workflow
+on:
+  # chỉ chạy thủ công bằng nút Run workflow
+  workflow_dispatch:
+
+# danh sách job
+jobs:
+  # job regression
+  regression:
+    # chạy trên Ubuntu mới nhất
+    runs-on: ubuntu-latest
+
+    # danh sách steps
+    steps:
+      # lấy source code từ repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # cài Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # cài Python dependencies
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      # cài Playwright browser
+      - name: Install Playwright browsers
+        run: |
+          python -m playwright install --with-deps
+
+      # chạy regression test
+      - name: Run regression tests
+        env:
+          DP360_BASE_URL: ${{ secrets.DP360_BASE_URL }}
+          DP360_USERNAME: ${{ secrets.DP360_USERNAME }}
+          DP360_PASSWORD: ${{ secrets.DP360_PASSWORD }}
+          HEADLESS: "true"
+          BROWSER: "chromium"
+        run: |
+          mkdir -p reports
+          python -m pytest -m regression -v --tb=short --html=reports/regression-report.html --self-contained-html
+
+      # upload report/log/screenshot/video/trace
+      - name: Upload regression artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-artifacts
+          path: |
+            reports/
+            logs/
+            screenshots/
+            videos/
+            traces/
