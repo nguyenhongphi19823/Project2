@@ -100,16 +100,20 @@ jobs:
 
       # upload artifact sau khi test chạy xong
       - name: Upload test artifacts
+        # luôn chạy bước upload dù test pass hay fail
         if: always()
+        # dùng GitHub action upload-artifact version 4
         uses: actions/upload-artifact@v4
+        # cấu hình artifact
         with:
-          # tên artifact kèm browser
+          # tên artifact có kèm browser hiện tại trong matrix
           name: smoke-artifacts-${{ matrix.browser }}
-
-          # danh sách folder cần upload
+          # danh sách file/folder cần lưu lại
           path: |
             reports/
             logs/
             screenshots/
             videos/
             traces/
+            
+            
