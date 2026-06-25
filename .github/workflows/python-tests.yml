@@ -1,4 +1,4 @@
-# tên workflow hiển thị trên GitHub Actions
+# tên workflow hiển thị trên tab Actions
 name: Python Playwright Smoke Tests
 
 # điều kiện chạy workflow
@@ -7,42 +7,47 @@ on:
   push:
     # danh sách branch được trigger
     branches:
-      # branch master của repo
+      # branch master của repo bạn
       - master
 
-  # chạy khi tạo pull request vào branch master
+  # chạy khi có pull request vào master
   pull_request:
     # danh sách branch target
     branches:
-      # branch master của repo
+      # branch master của repo bạn
       - master
 
-  # cho phép chạy thủ công từ GitHub UI
+  # chạy tự động theo lịch
+  schedule:
+    # chạy mỗi ngày lúc 00:00 UTC, tức 07:00 sáng Việt Nam
+    - cron: "0 0 * * *"
+
+  # cho phép chạy thủ công bằng nút Run workflow
   workflow_dispatch:
 
-# danh sách job
+# danh sách job trong workflow
 jobs:
-  # job chạy smoke test
+  # job smoke test
   smoke:
-    # máy ảo Ubuntu mới nhất
+    # chạy trên máy ảo Ubuntu mới nhất
     runs-on: ubuntu-latest
 
     # cấu hình matrix
     strategy:
-      # không dừng toàn bộ matrix nếu 1 browser fail
+      # không hủy browser khác nếu một browser fail
       fail-fast: false
 
       # danh sách biến matrix
       matrix:
-        # chạy test trên 3 browser
+        # chạy trên 3 browser
         browser: [chromium, firefox, webkit]
 
-    # tên job hiển thị trên GitHub Actions
+    # tên job hiển thị theo từng browser
     name: Smoke tests - ${{ matrix.browser }}
 
     # danh sách step
     steps:
-      # lấy source code từ GitHub repo
+      # lấy source code từ repo
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -50,7 +55,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          # dùng Python 3.12
+          # version Python dùng trong CI
           python-version: "3.12"
 
       # cài Python dependencies
@@ -62,16 +67,16 @@ jobs:
           # cài thư viện từ requirements.txt
           python -m pip install -r requirements.txt
 
-      # cài browser Playwright
+      # cài browser cho Playwright
       - name: Install Playwright browsers
         run: |
-          # cài browser và Linux dependencies cho Playwright
+          # cài browser và dependencies Linux
           python -m playwright install --with-deps
 
       # chạy smoke test
       - name: Run smoke tests
         env:
-          # base URL lấy từ GitHub Secrets
+          # base url lấy từ GitHub Secrets
           DP360_BASE_URL: ${{ secrets.DP360_BASE_URL }}
 
           # username lấy từ GitHub Secrets
@@ -80,7 +85,7 @@ jobs:
           # password lấy từ GitHub Secrets
           DP360_PASSWORD: ${{ secrets.DP360_PASSWORD }}
 
-          # trên CI nên chạy headless
+          # CI nên chạy headless
           HEADLESS: "true"
 
           # browser lấy từ matrix
@@ -90,15 +95,15 @@ jobs:
           # tạo folder reports nếu chưa có
           mkdir -p reports
 
-          # chạy smoke test và tạo report riêng theo browser
+          # chạy smoke test theo browser hiện tại trong matrix
           python -m pytest -m smoke -v --tb=short --browser ${{ matrix.browser }} --headless true --html=reports/smoke-${{ matrix.browser }}-report.html --self-contained-html
 
-      # upload report/log/screenshot/video/trace
+      # upload artifact sau khi test chạy xong
       - name: Upload test artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          # tên artifact có kèm browser
+          # tên artifact kèm browser
           name: smoke-artifacts-${{ matrix.browser }}
 
           # danh sách folder cần upload
