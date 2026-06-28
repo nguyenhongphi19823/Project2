@@ -25,6 +25,82 @@ on:
   # cho phép chạy thủ công bằng nút Run workflow
   workflow_dispatch:
 
+# tên workflow hiển thị trong tab Actions
+name: Python Playwright Tests
+
+# điều kiện chạy workflow
+on:
+  # chạy khi push code lên branch master
+  push:
+    # danh sách branch được trigger
+    branches:
+      # branch master của repo
+      - master
+
+  # chạy khi tạo pull request vào master
+  pull_request:
+    # danh sách branch target
+    branches:
+      # branch master của repo
+      - master
+
+  # chạy thủ công và cho phép nhập option
+  workflow_dispatch:
+    # danh sách input khi bấm Run workflow
+    inputs:
+      # input chọn browser
+      browser:
+        # mô tả hiển thị trên GitHub UI
+        description: "Browser to run"
+        # bắt buộc phải chọn browser
+        required: true
+        # giá trị mặc định
+        default: "chromium"
+        # kiểu lựa chọn dropdown
+        type: choice
+        # danh sách lựa chọn
+        options:
+          # chọn Chromium
+          - chromium
+          # chọn Firefox
+          - firefox
+          # chọn WebKit
+          - webkit
+
+      # input chọn loại test
+      test_type:
+        # mô tả hiển thị trên GitHub UI
+        description: "Test type to run"
+        # bắt buộc phải chọn test type
+        required: true
+        # giá trị mặc định
+        default: "smoke"
+        # kiểu lựa chọn dropdown
+        type: choice
+        # danh sách lựa chọn
+        options:
+          # chạy smoke test
+          - smoke
+          # chạy regression test
+          - regression
+
+      # input chọn headless
+      headless:
+        # mô tả hiển thị trên GitHub UI
+        description: "Run headless"
+        # bắt buộc phải chọn headless
+        required: true
+        # giá trị mặc định
+        default: "true"
+        # kiểu lựa chọn dropdown
+        type: choice
+        # danh sách lựa chọn
+        options:
+          # chạy không mở giao diện browser
+          - "true"
+          # chạy có mở giao diện browser
+          - "false"
+
 # danh sách job trong workflow
 jobs:
   # job smoke test
