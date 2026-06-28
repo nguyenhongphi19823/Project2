@@ -1,6 +1,11 @@
 # tên workflow hiển thị trên GitHub Actions
 name: Manual Playwright Tests
 
+
+permissions:
+  # workflow chỉ được đọc source code
+  contents: read
+
 # điều kiện chạy workflow
 on:
   # chỉ chạy thủ công bằng nút Run workflow
@@ -99,36 +104,51 @@ jobs:
           python -m playwright install --with-deps
 
       # chạy test theo input
-      - name: Run selected tests
-        env:
-          # base url lấy từ GitHub Secrets
-          DP360_BASE_URL: ${{ secrets.DP360_BASE_URL }}
+- name: Run selected tests
+  # truyền biến môi trường vào test
+  env:
+    # base URL lấy từ GitHub Secrets
+    DP360_BASE_URL: ${{ secrets.DP360_BASE_URL }}
 
-          # username lấy từ GitHub Secrets
-          DP360_USERNAME: ${{ secrets.DP360_USERNAME }}
+    # username lấy từ GitHub Secrets
+    DP360_USERNAME: ${{ secrets.DP360_USERNAME }}
 
-          # password lấy từ GitHub Secrets
-          DP360_PASSWORD: ${{ secrets.DP360_PASSWORD }}
+    # password lấy từ GitHub Secrets
+    DP360_PASSWORD: ${{ secrets.DP360_PASSWORD }}
 
-        run: |
-          # tạo folder reports nếu chưa có
-          mkdir -p reports
+  # command chạy test
+  run: |
+    # kiểm tra DP360_BASE_URL không bị rỗng
+    test -n "$DP360_BASE_URL"
 
-          # chạy pytest theo input test_type/browser/headless
-          python -m pytest -m "${{ github.event.inputs.test_type }}" -v --tb=short --browser "${{ github.event.inputs.browser }}" --headless "${{ github.event.inputs.headless }}" --html=reports/${{ github.event.inputs.test_type }}-${{ github.event.inputs.browser }}-report.html --self-contained-html
+    # kiểm tra DP360_USERNAME không bị rỗng
+    test -n "$DP360_USERNAME"
 
-      # upload artifacts sau khi chạy xong
-      - name: Upload test artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          # tên artifact theo input đã chọn
-          name: ${{ github.event.inputs.test_type }}-${{ github.event.inputs.browser }}-artifacts
+    # kiểm tra DP360_PASSWORD không bị rỗng
+    test -n "$DP360_PASSWORD"
 
-          # danh sách folder cần upload
-          path: |
-            reports/
-            logs/
-            screenshots/
-            videos/
-            traces/
+    # tạo folder reports nếu chưa có
+    mkdir -p reports
+
+    # chạy pytest theo input user chọn
+    python -m pytest -m "${{ github.event.inputs.test_type }}" -v --tb=short --browser "${{ github.event.inputs.browser }}" --headless "${{ github.event.inputs.headless }}" --html=reports/${{ github.event.inputs.test_type }}-${{ github.event.inputs.browser }}-report.html --self-contained-html
+    
+      
+     # upload artifacts sau khi chạy xong
+     - name: Upload test artifacts
+       # luôn upload dù test pass hay fail
+       if: always()
+       # dùng action upload artifact
+       uses: actions/upload-artifact@v4
+       # cấu hình artifact
+       with:
+         # tên artifact theo input đã chọn
+         name: ${{ github.event.inputs.test_type }}-${{ github.event.inputs.browser }}-artifacts
+
+         # chỉ upload folder debug, không upload .env hoặc auth/
+         path: |
+           reports/
+           logs/
+           screenshots/
+           videos/
+           traces/

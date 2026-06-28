@@ -48,3 +48,27 @@ allure-results/
 # ignore auth storage state
 
 auth/storage_state.json
+
+
+# ignore local environment file chứa username/password
+.env
+
+# ignore Playwright login session
+auth/storage_state.json
+
+# ignore generated reports
+reports/
+
+# ignore generated logs
+logs/
+
+# ignore screenshots/videos/traces
+screenshots/
+videos/
+traces/
+
+# ignore Python virtual environment
+.venv/
+
+# ignore PyCharm config
+.idea/
