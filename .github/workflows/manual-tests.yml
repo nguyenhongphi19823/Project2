@@ -1,0 +1,134 @@
+# tên workflow hiển thị trên GitHub Actions
+name: Manual Playwright Tests
+
+# điều kiện chạy workflow
+on:
+  # chỉ chạy thủ công bằng nút Run workflow
+  workflow_dispatch:
+    # danh sách input hiển thị khi bấm Run workflow
+    inputs:
+      # input chọn browser
+      browser:
+        # mô tả input browser
+        description: "Browser to run"
+        # bắt buộc chọn browser
+        required: true
+        # giá trị mặc định là chromium
+        default: "chromium"
+        # kiểu input là dropdown choice
+        type: choice
+        # danh sách browser cho phép
+        options:
+          # Chromium browser
+          - chromium
+          # Firefox browser
+          - firefox
+          # WebKit browser
+          - webkit
+
+      # input chọn loại test
+      test_type:
+        # mô tả input test type
+        description: "Test type to run"
+        # bắt buộc chọn test type
+        required: true
+        # giá trị mặc định là smoke
+        default: "smoke"
+        # kiểu input là dropdown choice
+        type: choice
+        # danh sách test type cho phép
+        options:
+          # smoke test
+          - smoke
+          # regression test
+          - regression
+
+      # input chọn headless
+      headless:
+        # mô tả input headless
+        description: "Run headless"
+        # bắt buộc chọn headless
+        required: true
+        # mặc định CI chạy headless
+        default: "true"
+        # kiểu input dropdown choice
+        type: choice
+        # danh sách lựa chọn
+        options:
+          # chạy không mở UI browser
+          - "true"
+          # chạy có UI browser
+          - "false"
+
+# danh sách job
+jobs:
+  # job chạy test
+  test:
+    # chạy trên Ubuntu mới nhất
+    runs-on: ubuntu-latest
+
+    # tên job hiển thị theo input đã chọn
+    name: ${{ github.event.inputs.test_type }} - ${{ github.event.inputs.browser }}
+
+    # danh sách step
+    steps:
+      # lấy source code từ repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # cài Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          # dùng Python 3.12
+          python-version: "3.12"
+
+      # cài Python dependencies
+      - name: Install Python dependencies
+        run: |
+          # nâng cấp pip
+          python -m pip install --upgrade pip
+
+          # cài package từ requirements.txt
+          python -m pip install -r requirements.txt
+
+      # cài Playwright browser
+      - name: Install Playwright browsers
+        run: |
+          # cài browser và Linux dependencies
+          python -m playwright install --with-deps
+
+      # chạy test theo input
+      - name: Run selected tests
+        env:
+          # base url lấy từ GitHub Secrets
+          DP360_BASE_URL: ${{ secrets.DP360_BASE_URL }}
+
+          # username lấy từ GitHub Secrets
+          DP360_USERNAME: ${{ secrets.DP360_USERNAME }}
+
+          # password lấy từ GitHub Secrets
+          DP360_PASSWORD: ${{ secrets.DP360_PASSWORD }}
+
+        run: |
+          # tạo folder reports nếu chưa có
+          mkdir -p reports
+
+          # chạy pytest theo input test_type/browser/headless
+          python -m pytest -m "${{ github.event.inputs.test_type }}" -v --tb=short --browser "${{ github.event.inputs.browser }}" --headless "${{ github.event.inputs.headless }}" --html=reports/${{ github.event.inputs.test_type }}-${{ github.event.inputs.browser }}-report.html --self-contained-html
+
+      # upload artifacts sau khi chạy xong
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          # tên artifact theo input đã chọn
+          name: ${{ github.event.inputs.test_type }}-${{ github.event.inputs.browser }}-artifacts
+
+          # danh sách folder cần upload
+          path: |
+            reports/
+            logs/
+            screenshots/
+            videos/
+            traces/
