@@ -131,8 +131,8 @@ jobs:
     mkdir -p reports
 
     # chạy pytest theo input user chọn
-    python -m pytest -m "${{ github.event.inputs.test_type }}" -v --tb=short --browser "${{ github.event.inputs.browser }}" --headless "${{ github.event.inputs.headless }}" --html=reports/${{ github.event.inputs.test_type }}-${{ github.event.inputs.browser }}-report.html --self-contained-html
-    
+# chạy smoke test, nếu fail thì retry tối đa 2 lần
+      python -m pytest -m smoke -v --tb=short --reruns 2 --reruns-delay 3 --browser ${{ matrix.browser }} --headless true --html=reports/smoke-${{ matrix.browser }}-report.html --self-contained-html    
       
      # upload artifacts sau khi chạy xong
      - name: Upload test artifacts

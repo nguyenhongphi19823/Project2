@@ -248,3 +248,30 @@ def logged_in_page(browser):
 
     # đóng context sau khi test xong
     context.close()
+
+# fixture page dùng cho từng test UI
+@pytest.fixture(scope="function")
+def page(browser, request):
+
+    # tạo browser context mới cho từng test
+    context = browser.new_context(
+        record_video_dir=str(VIDEOS_DIR),
+        record_video_size={"width": 1280, "height": 720},
+    )
+
+    # bật tracing để debug khi cần
+    context.tracing.start(screenshots=True, snapshots=True, sources=True)
+
+    # tạo page/tab mới
+    page_obj = context.new_page()
+
+    # set timeout mặc định cho action như click/fill/goto
+    page_obj.set_default_timeout(30000)
+
+    # set timeout mặc định cho navigation như goto/load
+    page_obj.set_default_navigation_timeout(60000)
+
+    # trả page cho test chạy
+    yield page_obj
+
+    # phần teardown giữ nguyên như hiện tại
