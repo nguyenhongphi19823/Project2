@@ -173,8 +173,7 @@ jobs:
 
           # chạy smoke test theo browser hiện tại trong matrix
           # chạy smoke test, nếu fail thì retry tối đa 2 lần
-          python -m pytest -m smoke -v --tb=short --reruns 2 --reruns-delay 3 --browser ${{ matrix.browser }} --headless true --html=reports/smoke-${{ matrix.browser }}-report.html --self-contained-html
-      # upload artifact sau khi test chạy xong
+            python -m pytest -m smoke -v -n 2 --tb=short --reruns 2 --reruns-delay 3 --browser ${{ matrix.browser }} --headless true --html=reports/smoke-${{ matrix.browser }}-report.html --self-contained-html      # upload artifact sau khi test chạy xong
       - name: Upload test artifacts
         # luôn chạy bước upload dù test pass hay fail
         if: always()
