@@ -155,7 +155,7 @@ def browser(playwright_instance, request):
 
 # fixture page dùng cho từng test UI
 @pytest.fixture(scope="function")
-def page(browser, request):
+def page(browser, request, worker_id):
 
     # tạo browser context mới cho từng test và bật record video
     context = browser.new_context(
@@ -177,6 +177,9 @@ def page(browser, request):
 
     # lấy tên test và thay ký tự dễ gây lỗi bằng dấu gạch dưới
     test_name = request.node.name.replace("[", "_").replace("]", "_").replace("/", "_")
+
+    # thêm worker_id vào tên file để tránh trùng khi chạy parallel
+    test_name = f"{worker_id}_{test_name}"
 
     # tạo timestamp để tên file không bị trùng
     timestamp = int(time.time())
